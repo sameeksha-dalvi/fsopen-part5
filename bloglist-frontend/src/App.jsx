@@ -15,9 +15,17 @@ const App = () => {
     )
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
+  }, [])
+
   const loginForm = () => (
     <>
-      <h2>Login</h2>
+      <h2>Log in to Blogs App</h2>
       <form onSubmit={handleLogin}>
         <div>
           <label>
@@ -28,7 +36,7 @@ const App = () => {
         <div>
           <label>
             password
-            <input type="text" value={password} onChange={({ target }) => setPassword(target.value)} />
+            <input type="password" value={password} onChange={({ target }) => setPassword(target.value)} />
           </label>
         </div>
         <button type='submit'>login</button>
@@ -53,6 +61,7 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
@@ -61,12 +70,17 @@ const App = () => {
     }
   }
 
+  const handleLogout = () =>{
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
   return (
     <div>
       {!user && loginForm()}
       {user && (
       <div>
-        <p>{user.name} logged in</p>
+        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
         {userBlogsInfo()}
       </div>
     )}
