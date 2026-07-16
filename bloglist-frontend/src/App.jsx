@@ -70,7 +70,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = () =>{
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
@@ -79,11 +79,41 @@ const App = () => {
     <div>
       {!user && loginForm()}
       {user && (
-      <div>
-        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-        {userBlogsInfo()}
-      </div>
-    )}
+        <>
+          <div>
+            <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+           
+          </div>
+          <div>
+            <h2>Create New Blog</h2>
+          </div>
+          <form >
+            <div>
+              <label>
+                title:
+                <input type="text" />
+              </label>
+            </div>
+            <div>
+              <label>
+                author:
+                <input type="text" />
+              </label>
+            </div>
+            <div>
+              <label>
+                url:
+                <input type="text" />
+              </label>
+              
+            </div>
+            <button type='submit'>create</button>
+          </form>
+          <div>
+             {userBlogsInfo()}
+          </div>
+        </>
+      )}
     </div>
   )
 }
