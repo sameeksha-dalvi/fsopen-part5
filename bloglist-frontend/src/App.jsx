@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [newBlogTitle, setBlogTitle] = useState('')
+  const [newBlogAuthor, setBlogAuthor] = useState('')
+  const [newBlogUrl, setBlogUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -62,6 +65,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -70,9 +74,37 @@ const App = () => {
     }
   }
 
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleBlogTitle = (event) => {
+    setBlogTitle(event.target.value)
+  }
+
+  const handleBlogAuthor = (event) => {
+    setBlogAuthor(event.target.value)
+  }
+
+  const handleBlogUrl = (event) => {
+    setBlogUrl(event.target.value)
+  }
+
+  const addNewBlog = async event =>{
+    event.preventDefault();
+    console.log("title", newBlogTitle)
+
+    const blogObject = {
+      title: newBlogTitle,
+      author: newBlogAuthor,
+      url: newBlogUrl
+    }
+
+    const response = await blogService.create(blogObject)
+
+    console.log("addNewBlog resp:", response)
   }
 
   return (
@@ -82,35 +114,35 @@ const App = () => {
         <>
           <div>
             <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-           
+
           </div>
           <div>
             <h2>Create New Blog</h2>
           </div>
-          <form >
+          <form onSubmit={addNewBlog}>
             <div>
               <label>
                 title:
-                <input type="text" />
+                <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
               </label>
             </div>
             <div>
               <label>
                 author:
-                <input type="text" />
+                <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
               </label>
             </div>
             <div>
               <label>
                 url:
-                <input type="text" />
+                <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
               </label>
-              
+
             </div>
             <button type='submit'>create</button>
           </form>
           <div>
-             {userBlogsInfo()}
+            {userBlogsInfo()}
           </div>
         </>
       )}
