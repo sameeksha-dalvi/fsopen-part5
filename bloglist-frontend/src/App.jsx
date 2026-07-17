@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +12,10 @@ const App = () => {
   const [newBlogTitle, setBlogTitle] = useState('')
   const [newBlogAuthor, setBlogAuthor] = useState('')
   const [newBlogUrl, setBlogUrl] = useState('')
+  const [displayMessage, setDisplayMessage] = useState({
+    message: null,
+    type: null
+  })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -29,6 +34,8 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Log in to Blogs App</h2>
+      <Notification message={displayMessage.message}
+        type={displayMessage.type} />
       <form onSubmit={handleLogin}>
         <div>
           <label>
@@ -50,7 +57,7 @@ const App = () => {
 
   const userBlogsInfo = () => (
     <>
-      <h2>blogs</h2>
+      
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
@@ -70,6 +77,17 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
+
+      setDisplayMessage({
+        message: 'wrong credentials',
+        type: 'error',
+      })
+      setTimeout(() => {
+        setDisplayMessage({
+          message: null,
+          type: null,
+        })
+      }, 5000)
       console.log('wrong credentials')
     }
   }
@@ -92,7 +110,7 @@ const App = () => {
     setBlogUrl(event.target.value)
   }
 
-  const addNewBlog = async event =>{
+  const addNewBlog = async event => {
     event.preventDefault();
     console.log("title", newBlogTitle)
 
@@ -104,6 +122,17 @@ const App = () => {
 
     const response = await blogService.create(blogObject)
 
+    setDisplayMessage({
+      message: `a new blog ${newBlogTitle} by ${newBlogAuthor} added`,
+      type: 'success',
+    })
+    setTimeout(() => {
+      setDisplayMessage({
+        message: null,
+        type: null,
+      })
+    }, 5000)
+
     console.log("addNewBlog resp:", response)
   }
 
@@ -113,6 +142,9 @@ const App = () => {
       {user && (
         <>
           <div>
+            <h2>blogs</h2>
+            <Notification message={displayMessage.message}
+              type={displayMessage.type} />
             <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
           </div>
