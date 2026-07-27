@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import CreateBlogForm from './components/CreateBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -148,7 +150,19 @@ const App = () => {
             <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
           </div>
-          <div>
+          <Togglable buttonLabel='create new blog'>
+            <CreateBlogForm
+            handleSubmit={addNewBlog}
+            handleTitleChange={handleBlogTitle}
+            handleAuthorChange={handleBlogAuthor}
+            handleUrlChange={handleBlogUrl}
+            title={newBlogTitle}
+            author={newBlogAuthor}
+            url={newBlogUrl}
+            />
+          </Togglable>
+
+          {/* <div>
             <h2>Create New Blog</h2>
           </div>
           <form onSubmit={addNewBlog}>
@@ -172,7 +186,7 @@ const App = () => {
 
             </div>
             <button type='submit'>create</button>
-          </form>
+          </form> */}
           <div>
             {userBlogsInfo()}
           </div>
