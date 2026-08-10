@@ -11,9 +11,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlogTitle, setBlogTitle] = useState('')
-  const [newBlogAuthor, setBlogAuthor] = useState('')
-  const [newBlogUrl, setBlogUrl] = useState('')
+  // const [newBlogTitle, setBlogTitle] = useState('')
+  // const [newBlogAuthor, setBlogAuthor] = useState('')
+  // const [newBlogUrl, setBlogUrl] = useState('')
   const [displayMessage, setDisplayMessage] = useState({
     message: null,
     type: null
@@ -61,7 +61,7 @@ const App = () => {
 
   const userBlogsInfo = () => (
     <>
-      
+
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
@@ -102,34 +102,34 @@ const App = () => {
     setUser(null)
   }
 
-  const handleBlogTitle = (event) => {
-    setBlogTitle(event.target.value)
-  }
+  // const handleBlogTitle = (event) => {
+  //   setBlogTitle(event.target.value)
+  // }
 
-  const handleBlogAuthor = (event) => {
-    setBlogAuthor(event.target.value)
-  }
+  // const handleBlogAuthor = (event) => {
+  //   setBlogAuthor(event.target.value)
+  // }
 
-  const handleBlogUrl = (event) => {
-    setBlogUrl(event.target.value)
-  }
+  // const handleBlogUrl = (event) => {
+  //   setBlogUrl(event.target.value)
+  // }
 
-  const addNewBlog = async event => {
-    event.preventDefault();
-    console.log("title", newBlogTitle)
+  const addNewBlog = async blogObject => {
+    // event.preventDefault();
+    // console.log("title", newBlogTitle)
 
-    const blogObject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl
-    }
+    // const blogObject = {
+    //   title: newBlogTitle,
+    //   author: newBlogAuthor,
+    //   url: newBlogUrl
+    // }
 
     blogFormRef.current.toggleVisibility()
 
     const response = await blogService.create(blogObject)
 
     setDisplayMessage({
-      message: `a new blog ${newBlogTitle} by ${newBlogAuthor} added`,
+      message: `a new blog ${blogObject.title} by ${blogObject.author} added`,
       type: 'success',
     })
     setTimeout(() => {
@@ -156,13 +156,7 @@ const App = () => {
           </div>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <CreateBlogForm
-            handleSubmit={addNewBlog}
-            handleTitleChange={handleBlogTitle}
-            handleAuthorChange={handleBlogAuthor}
-            handleUrlChange={handleBlogUrl}
-            title={newBlogTitle}
-            author={newBlogAuthor}
-            url={newBlogUrl}
+              createBlog={addNewBlog}
             />
           </Togglable>
 
