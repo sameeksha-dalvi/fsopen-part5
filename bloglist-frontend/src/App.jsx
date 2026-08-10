@@ -64,7 +64,7 @@ const App = () => {
 
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </>
   )
@@ -141,6 +141,14 @@ const App = () => {
 
     console.log("addNewBlog resp:", response)
   }
+
+  const updateBlog = (updatedBlog) => {
+  setBlogs(blogs =>
+    blogs.map(blog =>
+      blog.id === updatedBlog.id ? updatedBlog : blog
+    )
+  )
+}
 
   return (
     <div>
