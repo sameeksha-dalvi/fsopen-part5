@@ -23,7 +23,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a,b)=> b.likes - a.likes))
+      //setBlogs(blogs)
     )
   }, [])
 
@@ -61,8 +62,7 @@ const App = () => {
 
   const userBlogsInfo = () => (
     <>
-
-
+    
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
@@ -143,12 +143,12 @@ const App = () => {
   }
 
   const updateBlog = (updatedBlog) => {
-  setBlogs(blogs =>
-    blogs.map(blog =>
-      blog.id === updatedBlog.id ? updatedBlog : blog
+    setBlogs(blogs =>
+      blogs.map(blog =>
+        blog.id === updatedBlog.id ? updatedBlog : blog
+      )
     )
-  )
-}
+  }
 
   return (
     <div>
