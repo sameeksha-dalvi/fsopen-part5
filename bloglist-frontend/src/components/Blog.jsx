@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, loggedInUserName }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,8 +10,12 @@ const Blog = ({ blog, updateBlog }) => {
     marginBottom: 5
   }
   const [visible, setVisible] = useState(false)
+  //const [visibleRemoveBtn, setVisibleRemoveBtn] = useState(false)
 
   const showBlogDetail = { display: visible ? '' : 'none' }
+  const showRemoveBtn = {
+    display: loggedInUserName === blog.user.username ? '' : 'none'
+  }
 
   const toggleBlogVisibility = () => {
     setVisible(!visible)
@@ -33,8 +37,15 @@ const Blog = ({ blog, updateBlog }) => {
     //console.log(blog.user.id)
 
   }
-  console.log('blog:', blog)
-  console.log('blog.user:', blog.user)
+  //console.log('blog:', blog)
+  //console.log('blog.user:', blog.user)
+  console.log('loggedInUserName:', loggedInUserName)
+  console.log('blog.username:', blog.user.username)
+
+  // if(loggedInUserName === blog.user.username){
+  //   setVisibleRemoveBtn(!visibleRemoveBtn)
+  // }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -48,7 +59,8 @@ const Blog = ({ blog, updateBlog }) => {
           <button onClick={updateBlogLikes}>like</button>
         </div>
         {blog.user.name}
-
+        <br />
+        <button style={showRemoveBtn}>remove</button>
       </div>
 
     </div>

@@ -60,11 +60,11 @@ const App = () => {
 
   )
 
-  const userBlogsInfo = () => (
+  const userBlogsInfo = (username) => (
     <>
     
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} loggedInUserName = {username}/>
       )}
     </>
   )
@@ -194,7 +194,7 @@ const App = () => {
             <button type='submit'>create</button>
           </form> */}
           <div>
-            {userBlogsInfo()}
+            {userBlogsInfo(user.username)}
           </div>
         </>
       )}
