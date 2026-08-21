@@ -23,7 +23,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((a,b)=> b.likes - a.likes))
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
       //setBlogs(blogs)
     )
   }, [])
@@ -33,6 +33,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -62,9 +63,9 @@ const App = () => {
 
   const userBlogsInfo = (username) => (
     <>
-    
+
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} loggedInUserName = {username}/>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} loggedInUserName={username} />
       )}
     </>
   )
@@ -148,6 +149,10 @@ const App = () => {
         blog.id === updatedBlog.id ? updatedBlog : blog
       )
     )
+  }
+
+  const removeBlog = (id) => {
+    setBlogs(blogs => blogs.filter(blog => blog.id !== id))
   }
 
   return (

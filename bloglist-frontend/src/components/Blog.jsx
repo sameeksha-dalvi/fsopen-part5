@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlog, loggedInUserName }) => {
+const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -39,12 +39,19 @@ const Blog = ({ blog, updateBlog, loggedInUserName }) => {
   }
   //console.log('blog:', blog)
   //console.log('blog.user:', blog.user)
-  console.log('loggedInUserName:', loggedInUserName)
-  console.log('blog.username:', blog.user.username)
+  //console.log('loggedInUserName:', loggedInUserName)
+  //console.log('blog.username:', blog.user.username)
 
   // if(loggedInUserName === blog.user.username){
   //   setVisibleRemoveBtn(!visibleRemoveBtn)
   // }
+
+  const removeBlogConfirmation = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.deleteBlog(blog.id)
+      removeBlog(blog.id)
+    }
+  }
 
   return (
     <div style={blogStyle}>
@@ -60,7 +67,7 @@ const Blog = ({ blog, updateBlog, loggedInUserName }) => {
         </div>
         {blog.user.name}
         <br />
-        <button style={showRemoveBtn}>remove</button>
+        <button style={showRemoveBtn} onClick={removeBlogConfirmation}>remove</button>
       </div>
 
     </div>
