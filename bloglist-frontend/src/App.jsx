@@ -140,7 +140,7 @@ const App = () => {
       })
     }, 5000)
 
-    console.log("addNewBlog resp:", response)
+    console.log('addNewBlog resp:', response)
   }
 
   const updateBlog = (updatedBlog) => {
