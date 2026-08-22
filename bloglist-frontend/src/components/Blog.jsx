@@ -54,12 +54,12 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div className="blog" style={blogStyle}>
+      <div  className="blog-title-author">
         {blog.title} by {blog.author}
         <button onClick={toggleBlogVisibility}> {visible ? 'hide' : 'view'}</button>
       </div>
-      <div style={showBlogDetail}>
+      <div className="blog-details" style={showBlogDetail}>
         {blog.url}
         <div>
           {blog.likes}
