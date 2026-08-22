@@ -143,15 +143,22 @@ const App = () => {
     console.log('addNewBlog resp:', response)
   }
 
-  const updateBlog = (updatedBlog) => {
+  const updateBlog = async (updatedBlog) => {
+
+    const response = await blogService.update(
+      updatedBlog.id,
+      updatedBlog
+    )
+
     setBlogs(blogs =>
       blogs.map(blog =>
-        blog.id === updatedBlog.id ? updatedBlog : blog
+        blog.id === response.id ? response : blog
       )
     )
   }
 
-  const removeBlog = (id) => {
+  const removeBlog = async (id) => {
+    await blogService.deleteBlog(id)
     setBlogs(blogs => blogs.filter(blog => blog.id !== id))
   }
 

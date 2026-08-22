@@ -21,19 +21,27 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
     setVisible(!visible)
   }
 
-  const updateBlogLikes = async () => {
-    const blogObject = {
+  const updateBlogLikes = () => {
+    updateBlog({
       user: blog.user.id,
       likes: blog.likes + 1,
       author: blog.author,
       title: blog.title,
-      url: blog.url
-    }
+      url: blog.url,
+      id: blog.id
+    })
+    // const blogObject = {
+    //   user: blog.user.id,
+    //   likes: blog.likes + 1,
+    //   author: blog.author,
+    //   title: blog.title,
+    //   url: blog.url
+    // }
 
-    const response = await blogService.update(blog.id, blogObject)
+    // const response = await blogService.update(blog.id, blogObject)
 
-    console.log('updateBlogLikes resp', response)
-    updateBlog(response)
+    // console.log('updateBlogLikes resp', response)
+    // updateBlog(response)
     //console.log(blog.user.id)
 
   }
@@ -46,16 +54,22 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
   //   setVisibleRemoveBtn(!visibleRemoveBtn)
   // }
 
-  const removeBlogConfirmation = async () => {
+  // const removeBlogConfirmation = async () => {
+  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+  //     await blogService.deleteBlog(blog.id)
+  //     removeBlog(blog.id)
+  //   }
+  // }
+
+  const removeBlogConfirmation = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.deleteBlog(blog.id)
       removeBlog(blog.id)
     }
   }
 
   return (
     <div className="blog" style={blogStyle}>
-      <div  className="blog-title-author">
+      <div className="blog-title-author">
         {blog.title} by {blog.author}
         <button onClick={toggleBlogVisibility}> {visible ? 'hide' : 'view'}</button>
       </div>
