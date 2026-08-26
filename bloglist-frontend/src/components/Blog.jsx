@@ -75,7 +75,7 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
       <div className="blog-details" style={showBlogDetail}>
         {blog.url}
         <div>
-          {blog.likes}
+          <span className='likes'>{blog.likes}</span>
           <button onClick={updateBlogLikes}>like</button>
         </div>
         {blog.user.name}
