@@ -129,6 +129,10 @@ const App = () => {
 
     const response = await blogService.create(blogObject)
 
+    setBlogs(blogs =>
+      blogs.concat(response).sort((a, b) => b.likes - a.likes)
+    )
+
     setDisplayMessage({
       message: `a new blog ${blogObject.title} by ${blogObject.author} added`,
       type: 'success',
