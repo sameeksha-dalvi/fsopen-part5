@@ -73,9 +73,36 @@ describe('Blog app', () => {
             await blog.getByRole('button', { name: 'view' }).click()
             await blog.getByRole('button', { name: 'like' }).click()
 
-            console.log("logging likes textcontent: ",await blog.locator('.likes').textContent())
+            //console.log("logging likes textcontent: ", await blog.locator('.likes').textContent())
             await expect(blog.locator('.likes')).toHaveText('1')
 
         })
+
+        test('user can delete the blog', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill('title delete')
+            await page.getByLabel('author').fill('author')
+            await page.getByLabel('url').fill('url')
+            await page.getByRole('button', { name: 'create' }).click()
+
+            const blog = page.locator('.blog', {
+                hasText: 'title delete by author'
+            })
+
+            await blog.getByRole('button', { name: 'view' }).click()
+            await page.waitForTimeout(500)
+
+            //console.log(await page.locator('.blog').last().textContent())
+            //const removeButton = blog.getByRole('button', { name: 'remove' })
+            // console.log('remove count:', await removeButton.count())
+            // console.log('remove visible:', await removeButton.isVisible())
+
+            page.on('dialog', dialog => dialog.accept());
+            await blog.getByRole('button', { name: 'remove' }).click()
+
+            await expect(blog).not.toBeVisible()
+
+        })
+
     })
 })
