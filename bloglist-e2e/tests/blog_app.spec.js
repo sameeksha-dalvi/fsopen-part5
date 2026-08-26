@@ -58,5 +58,24 @@ describe('Blog app', () => {
             await expect(page.locator('.blog-title-author')).toContainText('test title by test author')
 
         })
+
+        test('a blog can be liked', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill('title like')
+            await page.getByLabel('author').fill('author')
+            await page.getByLabel('url').fill('url')
+            await page.getByRole('button', { name: 'create' }).click()
+
+            const blog = page.locator('.blog', {
+                hasText: 'title like by author'
+            })
+
+            await blog.getByRole('button', { name: 'view' }).click()
+            await blog.getByRole('button', { name: 'like' }).click()
+
+            console.log("logging likes textcontent: ",await blog.locator('.likes').textContent())
+            await expect(blog.locator('.likes')).toHaveText('1')
+
+        })
     })
 })
