@@ -11,6 +11,13 @@ describe('Blog app', () => {
                 password: 'mypassword'
             }
         })
+        await request.post('http://localhost:3003/api/users', {
+            data: {
+                name: 'Mani T',
+                username: 'mani',
+                password: 'manimani'
+            }
+        })
 
         await page.goto('http://localhost:5173')
     })
@@ -90,7 +97,7 @@ describe('Blog app', () => {
             })
 
             await blog.getByRole('button', { name: 'view' }).click()
-            await page.waitForTimeout(500)
+            //await page.waitForTimeout(500)
 
             //console.log(await page.locator('.blog').last().textContent())
             //const removeButton = blog.getByRole('button', { name: 'remove' })
@@ -103,6 +110,34 @@ describe('Blog app', () => {
             await expect(blog).not.toBeVisible()
 
         })
+
+    })
+
+    test('only user who added the blog can see remove button', async ({ page }) => {
+        await page.getByRole('textbox').first().fill('sameeksha')
+        await page.getByRole('textbox').last().fill('mypassword')
+        await page.getByRole('button', { name: 'login' }).click()
+
+        await page.getByRole('button', { name: 'create new blog' }).click()
+        await page.getByLabel('title').fill('title remove visible')
+        await page.getByLabel('author').fill('author')
+        await page.getByLabel('url').fill('url')
+        await page.getByRole('button', { name: 'create' }).click()
+
+        await page.getByRole('button', { name: 'logout' }).click()
+
+    
+        await page.getByRole('textbox').first().fill('mani')
+        await page.getByRole('textbox').last().fill('manimani')
+        await page.getByRole('button', { name: 'login' }).click()
+
+        const blog = page.locator('.blog', {
+            hasText: 'title remove visible by author'
+        })
+
+        await blog.getByRole('button', { name: 'view' }).click()
+
+        await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
 
     })
 })
