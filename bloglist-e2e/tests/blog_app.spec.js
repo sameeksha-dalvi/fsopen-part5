@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
@@ -29,17 +30,12 @@ describe('Blog app', () => {
 
     describe('Login', () => {
         test('succeeds with correct credentials', async ({ page }) => {
-            await page.getByRole('textbox').first().fill('sameeksha')
-            await page.getByRole('textbox').last().fill('mypassword')
-            await page.getByRole('button', { name: 'login' }).click()
-
+            await loginWith(page, 'sameeksha', 'mypassword')
             await expect(page.getByText('Sam D logged in')).toBeVisible()
         })
 
         test('fails with wrong credentials', async ({ page }) => {
-            await page.getByRole('textbox').first().fill('sameeksha')
-            await page.getByRole('textbox').last().fill('wrongpassword')
-            await page.getByRole('button', { name: 'login' }).click()
+            await loginWith(page, 'sameeksha', 'wrongpassword')
 
             const errorDiv = page.locator('.error')
             await expect(errorDiv).toContainText('wrong credentials')
@@ -50,28 +46,19 @@ describe('Blog app', () => {
 
     describe('When logged in', () => {
         beforeEach(async ({ page }) => {
-            await page.getByRole('textbox').first().fill('sameeksha')
-            await page.getByRole('textbox').last().fill('mypassword')
-            await page.getByRole('button', { name: 'login' }).click()
+            await loginWith(page, 'sameeksha', 'mypassword')
         })
 
         test('a new blog can be created', async ({ page }) => {
-            await page.getByRole('button', { name: 'create new blog' }).click()
-            await page.getByLabel('title').fill('test title')
-            await page.getByLabel('author').fill('test author')
-            await page.getByLabel('url').fill('test url')
-            await page.getByRole('button', { name: 'create' }).click()
+
+            await createBlog(page, 'test title', 'test author', 'test url')
 
             await expect(page.locator('.blog-title-author')).toContainText('test title by test author')
 
         })
 
         test('a blog can be liked', async ({ page }) => {
-            await page.getByRole('button', { name: 'create new blog' }).click()
-            await page.getByLabel('title').fill('title like')
-            await page.getByLabel('author').fill('author')
-            await page.getByLabel('url').fill('url')
-            await page.getByRole('button', { name: 'create' }).click()
+            await createBlog(page, 'title like', 'author', 'url')
 
             const blog = page.locator('.blog', {
                 hasText: 'title like by author'
@@ -86,11 +73,7 @@ describe('Blog app', () => {
         })
 
         test('user can delete the blog', async ({ page }) => {
-            await page.getByRole('button', { name: 'create new blog' }).click()
-            await page.getByLabel('title').fill('title delete')
-            await page.getByLabel('author').fill('author')
-            await page.getByLabel('url').fill('url')
-            await page.getByRole('button', { name: 'create' }).click()
+            await createBlog(page, 'title delete', 'author', 'url')
 
             const blog = page.locator('.blog', {
                 hasText: 'title delete by author'
@@ -114,22 +97,14 @@ describe('Blog app', () => {
     })
 
     test('only user who added the blog can see remove button', async ({ page }) => {
-        await page.getByRole('textbox').first().fill('sameeksha')
-        await page.getByRole('textbox').last().fill('mypassword')
-        await page.getByRole('button', { name: 'login' }).click()
 
-        await page.getByRole('button', { name: 'create new blog' }).click()
-        await page.getByLabel('title').fill('title remove visible')
-        await page.getByLabel('author').fill('author')
-        await page.getByLabel('url').fill('url')
-        await page.getByRole('button', { name: 'create' }).click()
+        await loginWith(page, 'sameeksha', 'mypassword')
+
+        await createBlog(page, 'title remove visible', 'author', 'url')
 
         await page.getByRole('button', { name: 'logout' }).click()
 
-    
-        await page.getByRole('textbox').first().fill('mani')
-        await page.getByRole('textbox').last().fill('manimani')
-        await page.getByRole('button', { name: 'login' }).click()
+        await loginWith(page, 'mani', 'manimani')
 
         const blog = page.locator('.blog', {
             hasText: 'title remove visible by author'
