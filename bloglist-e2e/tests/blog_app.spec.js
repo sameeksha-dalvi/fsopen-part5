@@ -40,4 +40,23 @@ describe('Blog app', () => {
             await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
         })
     })
+
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            await page.getByRole('textbox').first().fill('sameeksha')
+            await page.getByRole('textbox').last().fill('mypassword')
+            await page.getByRole('button', { name: 'login' }).click()
+        })
+
+        test('a new blog can be created', async ({ page }) => {
+            await page.getByRole('button', { name: 'create new blog' }).click()
+            await page.getByLabel('title').fill('test title')
+            await page.getByLabel('author').fill('test author')
+            await page.getByLabel('url').fill('test url')
+            await page.getByRole('button', { name: 'create' }).click()
+
+            await expect(page.locator('.blog-title-author')).toContainText('test title by test author')
+
+        })
+    })
 })
