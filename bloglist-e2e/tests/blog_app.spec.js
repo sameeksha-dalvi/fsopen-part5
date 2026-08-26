@@ -93,7 +93,42 @@ describe('Blog app', () => {
             await expect(blog).not.toBeVisible()
 
         })
+        test('blogs are ordered according to likes', async ({ page }) => {
+            await createBlog(page, 'blog 1', 'author 1', 'url 1')
+            await createBlog(page, 'blog 2', 'author 2', 'url 2')
+            await createBlog(page, 'blog 3', 'author 3', 'url 3')
 
+            const blog1 = page.locator('.blog', { hasText: 'blog 1 by author 1' })
+            await blog1.getByRole('button', { name: 'view' }).click()
+            await blog1.getByRole('button', { name: 'like' }).click()
+            await expect(blog1.locator('.likes')).toHaveText('1')
+
+            const blog2 = page.locator('.blog', { hasText: 'blog 2 by author 2' })
+            await blog2.getByRole('button', { name: 'view' }).click()
+            await blog2.getByRole('button', { name: 'like' }).click()
+            await expect(blog2.locator('.likes')).toHaveText('1')
+            await blog2.getByRole('button', { name: 'like' }).click()
+            await expect(blog2.locator('.likes')).toHaveText('2')
+
+            const blog3 = page.locator('.blog', { hasText: 'blog 3 by author 3' })
+            await blog3.getByRole('button', { name: 'view' }).click()
+            await blog3.getByRole('button', { name: 'like' }).click()
+            await expect(blog3.locator('.likes')).toHaveText('1')
+            await blog3.getByRole('button', { name: 'like' }).click()
+            await expect(blog3.locator('.likes')).toHaveText('2')
+            await blog3.getByRole('button', { name: 'like' }).click()
+            await expect(blog3.locator('.likes')).toHaveText('3')
+
+
+            const blogs = page.locator('.blog-title-author')
+
+            const blogTexts = await blogs.allTextContents()
+
+            //console.log("blogTexts :", blogTexts)
+            expect(blogTexts[0]).toContain('blog 3 by author 3')
+            expect(blogTexts[1]).toContain('blog 2 by author 2')
+            expect(blogTexts[2]).toContain('blog 1 by author 1')
+        })
     })
 
     test('only user who added the blog can see remove button', async ({ page }) => {
@@ -115,4 +150,6 @@ describe('Blog app', () => {
         await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
 
     })
+
+
 })
