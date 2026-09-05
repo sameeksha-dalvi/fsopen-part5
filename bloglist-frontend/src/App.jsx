@@ -5,6 +5,10 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import CreateBlogForm from './components/CreateBlogForm'
+import{
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -166,55 +170,64 @@ const App = () => {
     setBlogs(blogs => blogs.filter(blog => blog.id !== id))
   }
 
+  const padding = {
+    padding: 5
+  }
   return (
-    <div>
-      {!user && loginForm()}
-      {user && (
-        <>
-          <div>
-            <h2>blogs</h2>
-            <Notification message={displayMessage.message}
-              type={displayMessage.type} />
-            <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+    <Router>
+      <div>
+        <Link style={padding} to='/'>blogs</Link>
+        <Link style={padding} to='/login'>login</Link>
+      </div>
+    </Router>
+    // <div>
+    //   {!user && loginForm()}
+    //   {user && (
+    //     <>
+    //       <div>
+    //         <h2>blogs</h2>
+    //         <Notification message={displayMessage.message}
+    //           type={displayMessage.type} />
+    //         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
-          </div>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <CreateBlogForm
-              createBlog={addNewBlog}
-            />
-          </Togglable>
+    //       </div>
+    //       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+    //         <CreateBlogForm
+    //           createBlog={addNewBlog}
+    //         />
+    //       </Togglable>
 
-          {/* <div>
-            <h2>Create New Blog</h2>
-          </div>
-          <form onSubmit={addNewBlog}>
-            <div>
-              <label>
-                title:
-                <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
-              </label>
-            </div>
-            <div>
-              <label>
-                author:
-                <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
-              </label>
-            </div>
-            <div>
-              <label>
-                url:
-                <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
-              </label>
+    //       {/* <div>
+    //         <h2>Create New Blog</h2>
+    //       </div>
+    //       <form onSubmit={addNewBlog}>
+    //         <div>
+    //           <label>
+    //             title:
+    //             <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
+    //           </label>
+    //         </div>
+    //         <div>
+    //           <label>
+    //             author:
+    //             <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
+    //           </label>
+    //         </div>
+    //         <div>
+    //           <label>
+    //             url:
+    //             <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
+    //           </label>
 
-            </div>
-            <button type='submit'>create</button>
-          </form> */}
-          <div>
-            {userBlogsInfo(user.username)}
-          </div>
-        </>
-      )}
-    </div>
+    //         </div>
+    //         <button type='submit'>create</button>
+    //       </form> */}
+    //       <div>
+    //         {userBlogsInfo(user.username)}
+    //       </div>
+    //     </>
+    //   )}
+    // </div>
   )
 }
 
