@@ -1,34 +1,34 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+//import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import CreateBlogForm from './components/CreateBlogForm'
-import{
-  BrowserRouter as Router,
+//import Togglable from './components/Togglable'
+//import CreateBlogForm from './components/CreateBlogForm'
+import BlogList from './components/BlogList'
+
+import {
   Routes, Route, Link
 } from 'react-router-dom'
+
+import { useNavigate } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  // const [newBlogTitle, setBlogTitle] = useState('')
-  // const [newBlogAuthor, setBlogAuthor] = useState('')
-  // const [newBlogUrl, setBlogUrl] = useState('')
   const [displayMessage, setDisplayMessage] = useState({
     message: null,
     type: null
   })
 
   const blogFormRef = useRef()
+  const navigate = useNavigate()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-      //setBlogs(blogs)
     )
   }, [])
 
@@ -65,14 +65,7 @@ const App = () => {
 
   )
 
-  const userBlogsInfo = (username) => (
-    <>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} loggedInUserName={username} />
-      )}
-    </>
-  )
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -83,6 +76,7 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
+      navigate('/')
       setUsername('')
       setPassword('')
     } catch {
@@ -105,19 +99,9 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    navigate('/')
   }
 
-  // const handleBlogTitle = (event) => {
-  //   setBlogTitle(event.target.value)
-  // }
-
-  // const handleBlogAuthor = (event) => {
-  //   setBlogAuthor(event.target.value)
-  // }
-
-  // const handleBlogUrl = (event) => {
-  //   setBlogUrl(event.target.value)
-  // }
 
   const addNewBlog = async blogObject => {
     // event.preventDefault();
@@ -151,83 +135,102 @@ const App = () => {
     console.log('addNewBlog resp:', response)
   }
 
-  const updateBlog = async (updatedBlog) => {
+  // const updateBlog = async (updatedBlog) => {
 
-    const response = await blogService.update(
-      updatedBlog.id,
-      updatedBlog
-    )
+  //   const response = await blogService.update(
+  //     updatedBlog.id,
+  //     updatedBlog
+  //   )
 
-    setBlogs(blogs =>
-      blogs.map(blog =>
-        blog.id === response.id ? response : blog
-      ).sort((a, b) => b.likes - a.likes)
-    )
-  }
+  //   setBlogs(blogs =>
+  //     blogs.map(blog =>
+  //       blog.id === response.id ? response : blog
+  //     ).sort((a, b) => b.likes - a.likes)
+  //   )
+  // }
 
-  const removeBlog = async (id) => {
-    await blogService.deleteBlog(id)
-    setBlogs(blogs => blogs.filter(blog => blog.id !== id))
-  }
+  // const removeBlog = async (id) => {
+  //   await blogService.deleteBlog(id)
+  //   setBlogs(blogs => blogs.filter(blog => blog.id !== id))
+  // }
 
   const padding = {
     padding: 5
   }
   return (
-    <Router>
+    <>
       <div>
         <Link style={padding} to='/'>blogs</Link>
-        <Link style={padding} to='/login'>login</Link>
+        {!user && (
+          <Link style={padding} to="/login">
+            login
+          </Link>
+        )}
+        {user && (
+          <>
+            <span style={padding}>{user.name} logged in</span>
+            <button onClick={handleLogout}>
+              logout
+            </button>
+          </>
+        )}
       </div>
-    </Router>
-    // <div>
-    //   {!user && loginForm()}
-    //   {user && (
-    //     <>
-    //       <div>
-    //         <h2>blogs</h2>
-    //         <Notification message={displayMessage.message}
-    //           type={displayMessage.type} />
-    //         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
-    //       </div>
-    //       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-    //         <CreateBlogForm
-    //           createBlog={addNewBlog}
-    //         />
-    //       </Togglable>
+      <Routes>
+        <Route path="/login" element={loginForm()} />
+        <Route path="/" element={<BlogList blogs={blogs}/>} />
+      </Routes>
+    </>
 
-    //       {/* <div>
-    //         <h2>Create New Blog</h2>
-    //       </div>
-    //       <form onSubmit={addNewBlog}>
-    //         <div>
-    //           <label>
-    //             title:
-    //             <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
-    //           </label>
-    //         </div>
-    //         <div>
-    //           <label>
-    //             author:
-    //             <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
-    //           </label>
-    //         </div>
-    //         <div>
-    //           <label>
-    //             url:
-    //             <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
-    //           </label>
 
-    //         </div>
-    //         <button type='submit'>create</button>
-    //       </form> */}
-    //       <div>
-    //         {userBlogsInfo(user.username)}
-    //       </div>
-    //     </>
-    //   )}
-    // </div>
+  // <div>
+  //   {!user && loginForm()}
+  //   {user && (
+  //     <>
+  //       <div>
+  //         <h2>blogs</h2>
+  //         <Notification message={displayMessage.message}
+  //           type={displayMessage.type} />
+  //         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+
+  //       </div>
+  //       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+  //         <CreateBlogForm
+  //           createBlog={addNewBlog}
+  //         />
+  //       </Togglable>
+
+  //       {/* <div>
+  //         <h2>Create New Blog</h2>
+  //       </div>
+  //       <form onSubmit={addNewBlog}>
+  //         <div>
+  //           <label>
+  //             title:
+  //             <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
+  //           </label>
+  //         </div>
+  //         <div>
+  //           <label>
+  //             author:
+  //             <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
+  //           </label>
+  //         </div>
+  //         <div>
+  //           <label>
+  //             url:
+  //             <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
+  //           </label>
+
+  //         </div>
+  //         <button type='submit'>create</button>
+  //       </form> */}
+  //       <div>
+  //         {userBlogsInfo(user.username)}
+  //       </div>
+  //     </>
+  //   )}
+  // </div>
   )
 }
 
