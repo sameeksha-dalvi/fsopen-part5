@@ -135,24 +135,24 @@ const App = () => {
     console.log('addNewBlog resp:', response)
   }
 
-  // const updateBlog = async (updatedBlog) => {
+  const updateBlog = async (updatedBlog) => {
 
-  //   const response = await blogService.update(
-  //     updatedBlog.id,
-  //     updatedBlog
-  //   )
+    const response = await blogService.update(
+      updatedBlog.id,
+      updatedBlog
+    )
 
-  //   setBlogs(blogs =>
-  //     blogs.map(blog =>
-  //       blog.id === response.id ? response : blog
-  //     ).sort((a, b) => b.likes - a.likes)
-  //   )
-  // }
+    setBlogs(blogs =>
+      blogs.map(blog =>
+        blog.id === response.id ? response : blog
+      ).sort((a, b) => b.likes - a.likes)
+    )
+  }
 
-  // const removeBlog = async (id) => {
-  //   await blogService.deleteBlog(id)
-  //   setBlogs(blogs => blogs.filter(blog => blog.id !== id))
-  // }
+  const removeBlog = async (id) => {
+    await blogService.deleteBlog(id)
+    setBlogs(blogs => blogs.filter(blog => blog.id !== id))
+  }
 
   const padding = {
     padding: 5
@@ -178,7 +178,7 @@ const App = () => {
 
       <Routes>
         <Route path="/login" element={loginForm()} />
-        <Route path="/" element={<BlogList blogs={blogs}/>} />
+        <Route path="/" element={<BlogList blogs={blogs}  updateBlog={updateBlog} removeBlog={removeBlog} user={user}/>} />
       </Routes>
     </>
 
