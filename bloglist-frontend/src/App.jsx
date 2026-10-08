@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-//import Blog from './components/Blog'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -177,8 +177,11 @@ const App = () => {
       </div>
 
       <Routes>
+        <Route path="/blogs/:id" element={
+          <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user}/>
+        }/>
         <Route path="/login" element={loginForm()} />
-        <Route path="/" element={<BlogList blogs={blogs}  updateBlog={updateBlog} removeBlog={removeBlog} user={user}/>} />
+        <Route path="/" element={<BlogList blogs={blogs}/>} />
       </Routes>
     </>
 

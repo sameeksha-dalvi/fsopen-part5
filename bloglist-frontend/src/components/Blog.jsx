@@ -1,6 +1,15 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
+const Blog = ({ blogs, updateBlog, removeBlog, loggedInUserName }) => {
+
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
+
+  if (!blog) {
+    return null
+  }
+
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -8,16 +17,9 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const [visible, setVisible] = useState(false)
-  //const [visibleRemoveBtn, setVisibleRemoveBtn] = useState(false)
 
-  const showBlogDetail = { display: visible ? '' : 'none' }
   const showRemoveBtn = {
     display: loggedInUserName === blog.user.username ? '' : 'none'
-  }
-
-  const toggleBlogVisibility = () => {
-    setVisible(!visible)
   }
 
   const updateBlogLikes = () => {
@@ -29,36 +31,8 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
       url: blog.url,
       id: blog.id
     })
-    // const blogObject = {
-    //   user: blog.user.id,
-    //   likes: blog.likes + 1,
-    //   author: blog.author,
-    //   title: blog.title,
-    //   url: blog.url
-    // }
-
-    // const response = await blogService.update(blog.id, blogObject)
-
-    // console.log('updateBlogLikes resp', response)
-    // updateBlog(response)
-    //console.log(blog.user.id)
-
   }
-  //console.log('blog:', blog)
-  //console.log('blog.user:', blog.user)
-  //console.log('loggedInUserName:', loggedInUserName)
-  //console.log('blog.username:', blog.user.username)
 
-  // if(loggedInUserName === blog.user.username){
-  //   setVisibleRemoveBtn(!visibleRemoveBtn)
-  // }
-
-  // const removeBlogConfirmation = async () => {
-  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-  //     await blogService.deleteBlog(blog.id)
-  //     removeBlog(blog.id)
-  //   }
-  // }
 
   const removeBlogConfirmation = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
@@ -70,13 +44,15 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedInUserName }) => {
     <div className="blog" style={blogStyle}>
       <div className="blog-title-author">
         {blog.title} by {blog.author}
-        <button onClick={toggleBlogVisibility}> {visible ? 'hide' : 'view'}</button>
       </div>
-      <div className="blog-details" style={showBlogDetail}>
+      <div className="blog-details">
         {blog.url}
         <div>
           <span className='likes'>{blog.likes}</span>
-          <button onClick={updateBlogLikes}>like</button>
+          {loggedInUserName && (
+            <button onClick={updateBlogLikes}>like</button>
+          )}
+
         </div>
         {blog.user.name}
         <br />
