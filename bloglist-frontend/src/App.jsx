@@ -4,7 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 //import Togglable from './components/Togglable'
-//import CreateBlogForm from './components/CreateBlogForm'
+import CreateBlogForm from './components/CreateBlogForm'
 import BlogList from './components/BlogList'
 
 import {
@@ -113,7 +113,7 @@ const App = () => {
     //   url: newBlogUrl
     // }
 
-    blogFormRef.current.toggleVisibility()
+    //blogFormRef.current.toggleVisibility()
 
     const response = await blogService.create(blogObject)
 
@@ -152,6 +152,7 @@ const App = () => {
   const removeBlog = async (id) => {
     await blogService.deleteBlog(id)
     setBlogs(blogs => blogs.filter(blog => blog.id !== id))
+    navigate('/')
   }
 
   const padding = {
@@ -168,6 +169,7 @@ const App = () => {
         )}
         {user && (
           <>
+            <Link style={padding} to="/createBlog">new blog</Link>
             <span style={padding}>{user.name} logged in</span>
             <button onClick={handleLogout}>
               logout
@@ -178,10 +180,11 @@ const App = () => {
 
       <Routes>
         <Route path="/blogs/:id" element={
-          <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user}/>
+          <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user?.username}/>
         }/>
         <Route path="/login" element={loginForm()} />
         <Route path="/" element={<BlogList blogs={blogs}/>} />
+        <Route path="/createBlog" element={<CreateBlogForm createBlog={addNewBlog}/>}/>
       </Routes>
     </>
 

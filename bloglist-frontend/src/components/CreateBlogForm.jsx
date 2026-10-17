@@ -1,18 +1,22 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const CreateBlogForm = ({ createBlog }) => {
 
   const [newBlogTitle, setBlogTitle] = useState('')
   const [newBlogAuthor, setBlogAuthor] = useState('')
   const [newBlogUrl, setBlogUrl] = useState('')
+  const navigate = useNavigate()
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
-    createBlog({
+    await createBlog({
       title: newBlogTitle,
       author: newBlogAuthor,
       url: newBlogUrl
     })
+
+    navigate('/')
   }
 
   return (
