@@ -24,6 +24,7 @@ describe('Blog app', () => {
     })
 
     test('Login form is shown', async ({ page }) => {
+        await page.goto('http://localhost:5173/login')
         const locator = page.getByText('Log in to Blogs App')
         await expect(locator).toBeVisible()
     })
@@ -52,19 +53,24 @@ describe('Blog app', () => {
         test('a new blog can be created', async ({ page }) => {
 
             await createBlog(page, 'test title', 'test author', 'test url')
+            await expect(page).toHaveURL('http://localhost:5173/')
+            await expect(page.getByText('test title')).toBeVisible()
 
-            await expect(page.locator('.blog-title-author')).toContainText('test title by test author')
 
         })
 
         test('a blog can be liked', async ({ page }) => {
             await createBlog(page, 'title like', 'author', 'url')
 
+            await expect(page).toHaveURL('http://localhost:5173/')
+            await expect(page.getByText('title like')).toBeVisible()
+
+            await page.getByRole('link', { name: 'title like' }).click()
+
             const blog = page.locator('.blog', {
                 hasText: 'title like by author'
             })
 
-            await blog.getByRole('button', { name: 'view' }).click()
             await blog.getByRole('button', { name: 'like' }).click()
 
             //console.log("logging likes textcontent: ", await blog.locator('.likes').textContent())
@@ -75,11 +81,16 @@ describe('Blog app', () => {
         test('user can delete the blog', async ({ page }) => {
             await createBlog(page, 'title delete', 'author', 'url')
 
+            await expect(page).toHaveURL('http://localhost:5173/')
+            await expect(page.getByText('title delete')).toBeVisible()
+
+            await page.getByRole('link', { name: 'title delete' }).click()
+
             const blog = page.locator('.blog', {
                 hasText: 'title delete by author'
             })
 
-            await blog.getByRole('button', { name: 'view' }).click()
+            //await blog.getByRole('button', { name: 'view' }).click()
             //await page.waitForTimeout(500)
 
             //console.log(await page.locator('.blog').last().textContent())
@@ -89,8 +100,8 @@ describe('Blog app', () => {
 
             page.on('dialog', dialog => dialog.accept());
             await blog.getByRole('button', { name: 'remove' }).click()
-
-            await expect(blog).not.toBeVisible()
+            await expect(page).toHaveURL('http://localhost:5173/')
+            await expect(page.getByText('title delete')).not.toBeVisible()
 
         })
         test('blogs are ordered according to likes', async ({ page }) => {
@@ -141,11 +152,13 @@ describe('Blog app', () => {
 
         await loginWith(page, 'mani', 'manimani')
 
+        await page.getByRole('link', { name: 'title remove visible' }).click()
+
         const blog = page.locator('.blog', {
             hasText: 'title remove visible by author'
         })
 
-        await blog.getByRole('button', { name: 'view' }).click()
+        //await blog.getByRole('button', { name: 'view' }).click()
 
         await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
 
