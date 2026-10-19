@@ -6,7 +6,12 @@ import Notification from './components/Notification'
 //import Togglable from './components/Togglable'
 import CreateBlogForm from './components/CreateBlogForm'
 import BlogList from './components/BlogList'
-import { Container, TextField, Button } from '@mui/material'
+import {
+  Container, TextField, Button, AppBar,
+  Toolbar,
+  Typography,
+  Box,
+} from '@mui/material'
 
 import {
   Routes, Route, Link
@@ -45,8 +50,8 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Log in to Blogs App</h2>
-      <Notification message={displayMessage.message}
-        type={displayMessage.type} />
+      {/* <Notification message={displayMessage.message}
+        type={displayMessage.type} /> */}
       <form onSubmit={handleLogin}>
         <div>
           <TextField label="username" type="text" variant="standard" value={username} onChange={({ target }) => setUsername(target.value)} />
@@ -153,27 +158,57 @@ const App = () => {
   const padding = {
     padding: 5
   }
+
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
+
   return (
     <Container>
       <>
-        <div>
-          <Link style={padding} to='/'>blogs</Link>
-          {!user && (
-            <Link style={padding} to="/login">
-              login
-            </Link>
-          )}
-          {user && (
-            <>
-              <Link style={padding} to="/createBlog">new blog</Link>
-              <span style={padding}>{user.name} logged in</span>
-              <button onClick={handleLogout}>
-                logout
-              </button>
-            </>
-          )}
-        </div>
 
+        <AppBar position="static">
+          <Toolbar sx={{ width: '100%', boxSizing: 'border-box' }}>
+            <Typography
+              variant="h6"
+              component={Link}
+              to="/"
+              sx={{
+                mr: 'auto',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              Blog App
+            </Typography>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {!user && (
+                <Button component={Link} to="/login" color="inherit">
+                  Login
+                </Button>
+              )}
+
+              {user && (
+                <>
+                  <Button component={Link} to="/createBlog" color="inherit">
+                    New Blog
+                  </Button>
+
+                  <Typography variant="body2">
+                    {user.name} logged in
+                  </Typography>
+
+                  <Button color="inherit" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </>
+              )}
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <Notification
+          message={displayMessage.message}
+          type={displayMessage.type}
+        />
         <Routes>
           <Route path="/blogs/:id" element={
             <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user?.username} />
