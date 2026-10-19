@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 //import Togglable from './components/Togglable'
 import CreateBlogForm from './components/CreateBlogForm'
 import BlogList from './components/BlogList'
+import { Container, TextField, Button } from '@mui/material'
 
 import {
   Routes, Route, Link
@@ -48,18 +49,12 @@ const App = () => {
         type={displayMessage.type} />
       <form onSubmit={handleLogin}>
         <div>
-          <label>
-            username
-            <input type="text" value={username} onChange={({ target }) => setUsername(target.value)} />
-          </label>
+          <TextField label="username" type="text" variant="standard" value={username} onChange={({ target }) => setUsername(target.value)} />
         </div>
         <div>
-          <label>
-            password
-            <input type="password" value={password} onChange={({ target }) => setPassword(target.value)} />
-          </label>
+          <TextField label="password" type="password" variant="standard" value={password} onChange={({ target }) => setPassword(target.value)} />
         </div>
-        <button type='submit'>login</button>
+        <Button variant="contained" type='submit' style={{ marginTop: 10 }}>login</Button>
       </form>
     </>
 
@@ -159,84 +154,37 @@ const App = () => {
     padding: 5
   }
   return (
-    <>
-      <div>
-        <Link style={padding} to='/'>blogs</Link>
-        {!user && (
-          <Link style={padding} to="/login">
-            login
-          </Link>
-        )}
-        {user && (
-          <>
-            <Link style={padding} to="/createBlog">new blog</Link>
-            <span style={padding}>{user.name} logged in</span>
-            <button onClick={handleLogout}>
-              logout
-            </button>
-          </>
-        )}
-      </div>
+    <Container>
+      <>
+        <div>
+          <Link style={padding} to='/'>blogs</Link>
+          {!user && (
+            <Link style={padding} to="/login">
+              login
+            </Link>
+          )}
+          {user && (
+            <>
+              <Link style={padding} to="/createBlog">new blog</Link>
+              <span style={padding}>{user.name} logged in</span>
+              <button onClick={handleLogout}>
+                logout
+              </button>
+            </>
+          )}
+        </div>
 
-      <Routes>
-        <Route path="/blogs/:id" element={
-          <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user?.username}/>
-        }/>
-        <Route path="/login" element={loginForm()} />
-        <Route path="/" element={<BlogList blogs={blogs}/>} />
-        <Route path="/createBlog" element={<CreateBlogForm createBlog={addNewBlog}/>}/>
-      </Routes>
-    </>
+        <Routes>
+          <Route path="/blogs/:id" element={
+            <Blog blogs={blogs} removeBlog={removeBlog} updateBlog={updateBlog} loggedInUserName={user?.username} />
+          } />
+          <Route path="/login" element={loginForm()} />
+          <Route path="/" element={<BlogList blogs={blogs} />} />
+          <Route path="/createBlog" element={<CreateBlogForm createBlog={addNewBlog} />} />
+        </Routes>
+      </>
+    </Container>
 
-
-  // <div>
-  //   {!user && loginForm()}
-  //   {user && (
-  //     <>
-  //       <div>
-  //         <h2>blogs</h2>
-  //         <Notification message={displayMessage.message}
-  //           type={displayMessage.type} />
-  //         <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-
-  //       </div>
-  //       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-  //         <CreateBlogForm
-  //           createBlog={addNewBlog}
-  //         />
-  //       </Togglable>
-
-  //       {/* <div>
-  //         <h2>Create New Blog</h2>
-  //       </div>
-  //       <form onSubmit={addNewBlog}>
-  //         <div>
-  //           <label>
-  //             title:
-  //             <input type="text" value={newBlogTitle} onChange={handleBlogTitle} />
-  //           </label>
-  //         </div>
-  //         <div>
-  //           <label>
-  //             author:
-  //             <input type="text" value={newBlogAuthor} onChange={handleBlogAuthor} />
-  //           </label>
-  //         </div>
-  //         <div>
-  //           <label>
-  //             url:
-  //             <input type="text" value={newBlogUrl} onChange={handleBlogUrl} />
-  //           </label>
-
-  //         </div>
-  //         <button type='submit'>create</button>
-  //       </form> */}
-  //       <div>
-  //         {userBlogsInfo(user.username)}
-  //       </div>
-  //     </>
-  //   )}
-  // </div>
   )
 }
 
