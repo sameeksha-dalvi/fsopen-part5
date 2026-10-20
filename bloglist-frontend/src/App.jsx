@@ -155,12 +155,6 @@ const App = () => {
     navigate('/')
   }
 
-  const padding = {
-    padding: 5
-  }
-
-  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
-
   return (
     <Container>
       <>

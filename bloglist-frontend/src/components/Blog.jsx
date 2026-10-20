@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { Card, CardContent, Typography, CardActions, Button } from '@mui/material'
 
 const Blog = ({ blogs, updateBlog, removeBlog, loggedInUserName }) => {
 
@@ -9,14 +10,6 @@ const Blog = ({ blogs, updateBlog, removeBlog, loggedInUserName }) => {
     return null
   }
 
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   const showRemoveBtn = {
     display: loggedInUserName === blog.user.username ? '' : 'none'
@@ -41,25 +34,33 @@ const Blog = ({ blogs, updateBlog, removeBlog, loggedInUserName }) => {
   }
 
   return (
-    <div className="blog" style={blogStyle}>
-      <div className="blog-title-author">
-        {blog.title} by {blog.author}
-      </div>
-      <div className="blog-details">
-        {blog.url}
-        <div>
-          <span className='likes'>{blog.likes}</span>
-          {loggedInUserName && (
-            <button onClick={updateBlogLikes}>like</button>
-          )}
 
-        </div>
-        {blog.user.name}
-        <br />
-        <button style={showRemoveBtn} onClick={removeBlogConfirmation}>remove</button>
-      </div>
+    <Card className="blog" sx={{ marginTop: 5 }}>
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+          {blog.title}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '18px' }}>
+          by {blog.author}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '10px' }}>
+          {blog.url}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '10px' }}>
+          Added by {blog.user.username}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Typography variant="body1"  className="likes">
+          Likes {blog.likes}
+        </Typography>
+        {loggedInUserName && (
+          <Button size="small" variant="outlined" onClick={updateBlogLikes}>like</Button>
+        )}
 
-    </div>
+        <Button size="small" variant="outlined" color="error" style={showRemoveBtn} onClick={removeBlogConfirmation}>Remove</Button>
+      </CardActions>
+    </Card>
   )
 }
 
